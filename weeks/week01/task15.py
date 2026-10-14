@@ -21,7 +21,7 @@ def describe(
 def main() -> int:
     array = np.array([[1, 2, 3], [4, 5, 6]])
     tensor = torch.from_numpy(array)
-    device = torch.device("mps") #I may have to switch when I change my laptop
+    device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
 
     describe(
         array=array,
