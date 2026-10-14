@@ -1,7 +1,9 @@
 import numpy as np
 
 
-def min_max_normalize(array: np.ndarray, range_a: float = 0.0, range_b: float = 1.0) -> np.ndarray:
+def min_max_normalize(
+    array: np.ndarray, range_a: float = 0.0, range_b: float = 1.0
+) -> np.ndarray:
     minimum = array.min()
     maximum = array.max()
     if minimum == maximum:
