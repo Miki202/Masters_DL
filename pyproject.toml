@@ -1,0 +1,13 @@
+[tool.ruff]
+extend-exclude = [
+    "*.venv*",
+    "*DATA*",
+    "*notebooks*",
+]
+
+[tool.pyrefly]
+project-excludes = [
+    "**/*venv*",
+    "**/*DATA*",
+    "*notebooks*",
+]
