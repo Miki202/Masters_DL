@@ -4,7 +4,7 @@ import numpy as np
 
 
 def main() -> int:
-    one_d_array = np.random.rand(1_000_000)
+    one_d_array = np.random.default_rng().random(1_000_000)
     start_time_loop = time.perf_counter()
     loop_total = 0.0
     for value in one_d_array:
