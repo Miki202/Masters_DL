@@ -1,2 +1,2 @@
 # Masters_DL
-Project for the Master's course "Intro to Deep Learning"
+Project, tasks & exercises for the Master's course "Intro to Deep Learning"
