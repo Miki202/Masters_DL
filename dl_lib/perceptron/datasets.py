@@ -27,3 +27,12 @@ def nand_dataset() -> list[tuple[tuple[float, float], float]]:
         ((1.0, 0.0), 1.0),
         ((1.0, 1.0), 0.0),
     ]
+
+
+def xor_dataset() -> list[tuple[tuple[float, float], float]]:
+    return [
+        ((0.0, 0.0), 0.0),
+        ((0.0, 1.0), 1.0),
+        ((1.0, 0.0), 1.0),
+        ((1.0, 1.0), 0.0),
+    ]

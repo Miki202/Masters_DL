@@ -75,3 +75,20 @@ class TestNandDataset(unittest.TestCase):
 
         # Assert
         self.assertEqual(actual, expected)
+
+
+class TestXorDataset(unittest.TestCase):
+    def test_when_called_then_matches_the_xor_truth_table(self):
+        # Arrange
+        expected = [
+            ((0.0, 0.0), 0.0),
+            ((0.0, 1.0), 1.0),
+            ((1.0, 0.0), 1.0),
+            ((1.0, 1.0), 0.0),
+        ]
+
+        # Act
+        actual = datasets.xor_dataset()
+
+        # Assert
+        self.assertEqual(actual, expected)
