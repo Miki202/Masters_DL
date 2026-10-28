@@ -90,3 +90,24 @@ class TestGradientDescentStep(unittest.TestCase):
 
         # Assert
         np.testing.assert_array_equal(actual, params)
+
+
+class TestAnalyticalGradient(unittest.TestCase):
+    def test_when_no_bias_or_activation_then_matches_numerical_gradient(self):
+        # Arrange
+        dataset = [(0.0, 0.0), (1.0, 2.0), (2.0, 4.0), (3.0, 6.0), (4.0, 8.0)]
+        x_values = np.array([x for x, _ in dataset])
+        y_true = np.array([y for _, y in dataset])
+        weights = np.array([7.5])
+
+        def loss_fn(params: np.ndarray) -> float:
+            errors = params[0] * x_values - y_true
+            return float(np.mean(errors**2))
+
+        expected = functional.numerical_gradient(loss_fn, weights)[0]
+
+        # Act
+        actual, _ = functional.analytical_gradient(dataset, weights)
+
+        # Assert
+        self.assertAlmostEqual(actual[0], expected, places=3)

@@ -31,3 +31,29 @@ def gradient_descent_step(
     params: np.ndarray, gradient: np.ndarray, learning_rate: float
 ) -> np.ndarray:
     return params - learning_rate * gradient
+
+
+def analytical_gradient(
+    dataset: list[tuple],
+    weights: np.ndarray,
+    bias: float | None = None,
+    activation: Callable[[np.ndarray], np.ndarray] | None = None,
+    loss: str = "mse",
+) -> tuple[np.ndarray, float]:
+    x = np.array([np.atleast_1d(sample[0]) for sample in dataset], dtype=float)
+    y = np.array([sample[1] for sample in dataset], dtype=float)
+    n = len(y)
+
+    logits = x @ weights
+    if bias is not None:
+        logits = logits + bias
+
+    predictions = activation(logits) if activation is not None else logits
+    error = predictions - y
+
+    coefficient = 2 / n if loss == "mse" else 1 / n
+
+    weight_gradient = coefficient * (x.T @ error)
+    bias_gradient = coefficient * float(np.sum(error))
+
+    return weight_gradient, bias_gradient
