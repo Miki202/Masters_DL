@@ -5,25 +5,22 @@ from dl_lib.activations import functional
 
 
 def naive_softmax(x: np.ndarray) -> np.ndarray:
-    exponentiated = np.exp(x)
-    return exponentiated / np.sum(exponentiated, axis=-1, keepdims=True)
+    exponentials = np.exp(x)
+    return exponentials / np.sum(exponentials, axis=-1, keepdims=True)
 
 
 def describe(scores: np.ndarray, large_scores: np.ndarray) -> None:
     probabilities = functional.softmax(scores)
-    naive_probabilities = naive_softmax(large_scores)
-    stable_probabilities = functional.softmax(large_scores)
-    torch_probabilities = torch.softmax(torch.from_numpy(scores), dim=-1).numpy()
+    print(f"scores: {scores}")
+    print(f"softmax: {probabilities}")
+    print(f"sum of probabilities: {probabilities.sum():.4f}\n")
 
-    print(
-        f"scores: {scores}\n"
-        + f"softmax: {probabilities}\n"
-        + f"sum of probabilities: {probabilities.sum():.4f}\n"
-        + f"torch.softmax: {torch_probabilities}\n\n"
-        + f"Large scores: {large_scores}\n"
-        + f"Naive softmax (unstable): {naive_probabilities}\n"
-        + f"Stable softmax: {stable_probabilities}"
-    )
+    print(f"Large scores: {large_scores}")
+    print(f"Naive softmax (unstable): {naive_softmax(large_scores)}")
+    print(f"Stable softmax: {functional.softmax(large_scores)}")
+
+    torch_probabilities = torch.softmax(torch.from_numpy(scores), dim=-1).numpy()
+    print(f"\ntorch.softmax: {torch_probabilities}")
 
 
 def main() -> int:

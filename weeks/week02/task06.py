@@ -5,14 +5,12 @@ from dl_lib.metrics import functional
 
 def describe(y_true: np.ndarray, y_pred: np.ndarray) -> None:
     matrix = functional.confusion_matrix(y_true, y_pred)
-    print(
-        f"y_true: {y_true}\n"
-        + f"y_pred: {y_pred}\n\n"
-        + f"True positives:  {matrix['tp']}\n"
-        + f"True negatives:  {matrix['tn']}\n"
-        + f"False positives: {matrix['fp']}\n"
-        + f"False negatives: {matrix['fn']}"
-    )
+
+    print(f"y_true: {y_true}\ny_pred: {y_pred}\n")
+    print(f"True positives:  {matrix['tp']}")
+    print(f"True negatives:  {matrix['tn']}")
+    print(f"False positives: {matrix['fp']}")
+    print(f"False negatives: {matrix['fn']}")
 
 
 def main() -> int:

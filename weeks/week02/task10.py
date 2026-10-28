@@ -5,22 +5,21 @@ import torch
 from dl_lib.activations import functional
 
 
-def describe(x_range: np.ndarray) -> None:
-    sigmoid_range = functional.sigmoid(x_range)
-    torch_sigmoid = torch.sigmoid(torch.from_numpy(x_range)).numpy()
+def describe(x: np.ndarray) -> None:
+    for value in x:
+        print(f"sigmoid({value:g}) = {functional.sigmoid(np.array([value]))[0]:.6f}")
 
-    print(
-        f"sigmoid(-10) = {functional.sigmoid(np.array([-10.0]))[0]:.6f}\n"
-        + f"sigmoid(0)   = {functional.sigmoid(np.array([0.0]))[0]:.6f}\n"
-        + f"sigmoid(10)  = {functional.sigmoid(np.array([10.0]))[0]:.6f}\n"
-        + f"Output range: [{sigmoid_range.min():.6f}, {sigmoid_range.max():.6f}]\n"
-        + f"torch.sigmoid range: [{torch_sigmoid.min():.6f}, {torch_sigmoid.max():.6f}]"
-    )
+    full_range = np.linspace(-10, 10, 1001)
+    outputs = functional.sigmoid(full_range)
+    print(f"Output range: [{outputs.min():.6f}, {outputs.max():.6f}]")
+
+    torch_outputs = torch.sigmoid(torch.from_numpy(x)).numpy()
+    print(f"torch.sigmoid: {torch_outputs}")
 
 
-def plot(x_range: np.ndarray, sigmoid_range: np.ndarray) -> None:
-    plt.plot(x_range, sigmoid_range)
-    plt.title("sigmoid(x)")
+def plot(full_range: np.ndarray) -> None:
+    plt.plot(full_range, functional.sigmoid(full_range))
+    plt.title("Sigmoid activation")
     plt.xlabel("x")
     plt.ylabel("sigmoid(x)")
     plt.grid(True)
@@ -29,9 +28,9 @@ def plot(x_range: np.ndarray, sigmoid_range: np.ndarray) -> None:
 
 
 def main() -> int:
-    x_range = np.linspace(-10, 10, 200)
+    x = np.array([-10.0, 0.0, 10.0])
 
-    describe(x_range=x_range)
-    plot(x_range=x_range, sigmoid_range=functional.sigmoid(x_range))
+    describe(x)
+    plot(np.linspace(-10, 10, 1001))
 
     return 0

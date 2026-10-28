@@ -4,18 +4,35 @@ import numpy as np
 from dl_lib.metrics import functional
 
 
-def describe(
+def build_dataset(
+    rng: np.random.Generator, n_per_class: int = 50
+) -> tuple[np.ndarray, np.ndarray]:
+    negative_probabilities = rng.beta(a=2, b=5, size=n_per_class)
+    positive_probabilities = rng.beta(a=5, b=2, size=n_per_class)
+
+    y_true = np.array([0] * n_per_class + [1] * n_per_class)
+    probabilities = np.concatenate([negative_probabilities, positive_probabilities])
+
+    return y_true, probabilities
+
+
+def sweep_thresholds(
     y_true: np.ndarray, probabilities: np.ndarray, thresholds: np.ndarray
 ) -> tuple[np.ndarray, np.ndarray]:
-    precisions = []
-    recalls = []
-    for threshold in thresholds:
-        predictions = functional.apply_threshold(probabilities, threshold)
-        precisions.append(functional.precision(y_true, predictions))
-        recalls.append(functional.recall(y_true, predictions))
-    precisions = np.array(precisions)
-    recalls = np.array(recalls)
+    precisions = np.empty_like(thresholds)
+    recalls = np.empty_like(thresholds)
 
+    for i, threshold in enumerate(thresholds):
+        y_pred = functional.apply_threshold(probabilities, threshold)
+        precisions[i] = functional.precision(y_true, y_pred)
+        recalls[i] = functional.recall(y_true, y_pred)
+
+    return precisions, recalls
+
+
+def describe(
+    thresholds: np.ndarray, precisions: np.ndarray, recalls: np.ndarray
+) -> None:
     for sample in (0.2, 0.5, 0.8):
         index = np.argmin(np.abs(thresholds - sample))
         print(
@@ -23,13 +40,13 @@ def describe(
             + f"precision={precisions[index]:.4f}, recall={recalls[index]:.4f}"
         )
 
-    return precisions, recalls
 
-
-def plot(thresholds: np.ndarray, precisions: np.ndarray, recalls: np.ndarray) -> None:
-    plt.plot(thresholds, precisions, marker="o", label="precision")
-    plt.plot(thresholds, recalls, marker="o", label="recall")
-    plt.title("Precision and recall as the classification threshold rises")
+def plot(
+    thresholds: np.ndarray, precisions: np.ndarray, recalls: np.ndarray
+) -> None:
+    plt.plot(thresholds, precisions, label="Precision")
+    plt.plot(thresholds, recalls, label="Recall")
+    plt.title("Precision and recall as the threshold changes")
     plt.xlabel("threshold")
     plt.ylabel("value")
     plt.legend()
@@ -39,19 +56,13 @@ def plot(thresholds: np.ndarray, precisions: np.ndarray, recalls: np.ndarray) ->
 
 
 def main() -> int:
-    rng = np.random.default_rng(42)
+    rng = np.random.default_rng(seed=0)
+    y_true, probabilities = build_dataset(rng)
 
-    positive_probabilities = rng.uniform(0.2, 0.75, size=20)
-    negative_probabilities = rng.uniform(0.0, 0.75, size=80)
+    thresholds = np.linspace(0, 1, 101)
+    precisions, recalls = sweep_thresholds(y_true, probabilities, thresholds)
 
-    y_true = np.concatenate([np.ones(20, dtype=int), np.zeros(80, dtype=int)])
-    probabilities = np.concatenate([positive_probabilities, negative_probabilities])
-
-    thresholds = np.round(np.arange(0.05, 1.0, 0.05), 2)
-
-    precisions, recalls = describe(
-        y_true=y_true, probabilities=probabilities, thresholds=thresholds
-    )
+    describe(thresholds=thresholds, precisions=precisions, recalls=recalls)
     plot(thresholds=thresholds, precisions=precisions, recalls=recalls)
 
     return 0
