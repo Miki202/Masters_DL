@@ -111,3 +111,39 @@ class TestAnalyticalGradient(unittest.TestCase):
 
         # Assert
         self.assertAlmostEqual(actual[0], expected, places=3)
+
+    def test_when_bce_loss_with_sigmoid_then_matches_numerical_gradient(self):
+        # Arrange
+        from dl_lib.activations import functional as activations_functional
+        from dl_lib.losses import functional as losses_functional
+
+        dataset = [((0.0, 0.0), 0.0), ((0.0, 1.0), 0.0), ((1.0, 0.0), 0.0), ((1.0, 1.0), 1.0)]
+        weights = np.array([0.5, -0.1])
+        bias = 0.7
+
+        def bce_loss(params: np.ndarray) -> float:
+            w, b = params[:-1], params[-1]
+            predictions = np.array(
+                [
+                    activations_functional.sigmoid(np.array([x @ w + b]))[0]
+                    for x, _ in dataset
+                ]
+            )
+            targets = np.array([y for _, y in dataset])
+            return losses_functional.binary_cross_entropy(targets, predictions)
+
+        params = np.concatenate([weights, [bias]])
+        expected = functional.numerical_gradient(bce_loss, params)
+
+        # Act
+        actual_weights, actual_bias = functional.analytical_gradient(
+            dataset,
+            weights,
+            bias=bias,
+            activation=activations_functional.sigmoid,
+            loss="bce",
+        )
+
+        # Assert
+        np.testing.assert_allclose(actual_weights, expected[:-1], atol=1e-4)
+        self.assertAlmostEqual(actual_bias, expected[-1], places=4)
