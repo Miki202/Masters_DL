@@ -58,3 +58,20 @@ class TestOrDataset(unittest.TestCase):
 
         # Assert
         self.assertEqual(actual, expected)
+
+
+class TestNandDataset(unittest.TestCase):
+    def test_when_called_then_matches_the_nand_truth_table(self):
+        # Arrange
+        expected = [
+            ((0.0, 0.0), 1.0),
+            ((0.0, 1.0), 1.0),
+            ((1.0, 0.0), 1.0),
+            ((1.0, 1.0), 0.0),
+        ]
+
+        # Act
+        actual = datasets.nand_dataset()
+
+        # Assert
+        self.assertEqual(actual, expected)

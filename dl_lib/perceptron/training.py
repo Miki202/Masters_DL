@@ -18,11 +18,13 @@ def _apply_params(model: Perceptron, params: np.ndarray) -> None:
         model.bias = float(params[-1])
 
 
-def _loss(model: Perceptron, dataset: list[tuple]) -> float:
+def _loss(model: Perceptron, dataset: list[tuple], loss: str) -> float:
     predictions = np.array(
         [model.forward(np.atleast_1d(x)) for x, _ in dataset]
     )
     targets = np.array([y for _, y in dataset])
+    if loss == "bce":
+        return losses_functional.binary_cross_entropy(targets, predictions)
     return losses_functional.mse(targets, predictions)
 
 
@@ -32,13 +34,14 @@ def train(
     learning_rate: float,
     epochs: int,
     record_every: int,
+    loss: str = "mse",
 ) -> list[tuple[int, float]]:
     def loss_fn(params: np.ndarray) -> float:
         current_params = _params_from_model(model)
         _apply_params(model, params)
-        loss = _loss(model, dataset)
+        current_loss = _loss(model, dataset, loss)
         _apply_params(model, current_params)
-        return loss
+        return current_loss
 
     history = []
     for epoch in range(1, epochs + 1):
@@ -48,6 +51,6 @@ def train(
         _apply_params(model, new_params)
 
         if epoch % record_every == 0 or epoch == epochs:
-            history.append((epoch, _loss(model, dataset)))
+            history.append((epoch, _loss(model, dataset, loss)))
 
     return history
