@@ -24,3 +24,37 @@ class TestCreateDataset(unittest.TestCase):
 
         # Assert
         self.assertEqual(len(actual), n)
+
+
+class TestAndDataset(unittest.TestCase):
+    def test_when_called_then_matches_the_and_truth_table(self):
+        # Arrange
+        expected = [
+            ((0.0, 0.0), 0.0),
+            ((0.0, 1.0), 0.0),
+            ((1.0, 0.0), 0.0),
+            ((1.0, 1.0), 1.0),
+        ]
+
+        # Act
+        actual = datasets.and_dataset()
+
+        # Assert
+        self.assertEqual(actual, expected)
+
+
+class TestOrDataset(unittest.TestCase):
+    def test_when_called_then_matches_the_or_truth_table(self):
+        # Arrange
+        expected = [
+            ((0.0, 0.0), 0.0),
+            ((0.0, 1.0), 1.0),
+            ((1.0, 0.0), 1.0),
+            ((1.0, 1.0), 1.0),
+        ]
+
+        # Act
+        actual = datasets.or_dataset()
+
+        # Assert
+        self.assertEqual(actual, expected)
