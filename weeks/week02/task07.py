@@ -35,14 +35,15 @@ def build_imbalanced_dataset(
 
 def main() -> int:
     balanced_y_true, balanced_y_pred = build_balanced_dataset(
-        np.random.default_rng(seed=14)
+        np.random.default_rng(seed= 42) 
     )
-    describe("Balanced dataset", balanced_y_true, balanced_y_pred)
+    describe("Balanced dataset", balanced_y_true, balanced_y_pred) #определено са по-ниски от imbalanced dataset, 
+    #защото има по-малко примери
 
     print()
 
     imbalanced_y_true, imbalanced_y_pred = build_imbalanced_dataset(
-        np.random.default_rng(seed=0)
+        np.random.default_rng(seed=42)
     )
     describe(
         "Imbalanced dataset (990 negative, 10 positive)",
