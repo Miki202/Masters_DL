@@ -37,8 +37,8 @@ def main() -> int:
     balanced_y_true, balanced_y_pred = build_balanced_dataset(
         np.random.default_rng(seed= 42) 
     )
-    describe("Balanced dataset", balanced_y_true, balanced_y_pred) #определено са по-ниски от imbalanced dataset, 
-    #защото има по-малко примери
+    describe("Balanced dataset", balanced_y_true, balanced_y_pred) # definitely are lower than those in 
+    #the imbalanced dataset, because there are less examples
 
     print()
 
